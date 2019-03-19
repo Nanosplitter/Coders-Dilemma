@@ -47,22 +47,23 @@ public class Referee extends AbstractReferee {
     }
 
     private void endGame() {
-        gameManager.endGame();
-        System.err.println();
+        
+        
         Player p0 = gameManager.getPlayers().get(0);
         Player p1 = gameManager.getPlayers().get(1);
         if (p0.getScore() > p1.getScore()) {
-            System.err.println("-----------------Player 0 Wins----------------");
-            System.err.println("Score 0: " + p0.getScore());
-            System.err.println("Score 1: " + p1.getScore());
+            gameManager.addToGameSummary("-----------------Player 0 Wins----------------");
+            gameManager.addToGameSummary("Score 0: " + p0.getScore());
+            gameManager.addToGameSummary("Score 1: " + p1.getScore());
         }
         if (p0.getScore() < p1.getScore()) {
-        	System.err.println("-----------------Player 1 Wins----------------");
-        	System.err.println("Score 0: " + p0.getScore());
-            System.err.println("Score 1: " + p1.getScore());
+        	gameManager.addToGameSummary("-----------------Player 1 Wins----------------");
+        	gameManager.addToGameSummary("Score 0: " + p0.getScore());
+            gameManager.addToGameSummary("Score 1: " + p1.getScore());
             //p0.hud.setAlpha(0.3);
         }
-        System.err.println();
+        gameManager.endGame();
+        
     }
 
     @Override
@@ -88,75 +89,84 @@ public class Referee extends AbstractReferee {
         try {
             player0LastAction = player0.getAction();
             if (!player0LastAction.action.equals("SILENT") && !player0LastAction.action.equals("TALK")) {
-            	System.err.println("Invalid Action");
+            	gameManager.addToGameSummary("Invalid Action");
                 throw new InvalidAction("Invalid action");
             }
         } catch (TimeoutException e) {
-        	System.err.println("Timeout");
+        	gameManager.addToGameSummary(e.getMessage());
             player0.deactivate(String.format("$%d timeout!", player0.getIndex()));
             player0.setScore(-1);
             endGame();
+            return;
         } catch (InvalidAction e) {
+        	gameManager.addToGameSummary(e.getMessage());
             player0.deactivate(e.getMessage());
             player0.setScore(-1);
             endGame();
+            return;
         } catch (Exception e) {
+        	gameManager.addToGameSummary(e.getMessage());
         	player0.deactivate(e.getMessage());
             player0.setScore(-1);
             endGame();
+            return;
         }
 
         //Get Player 1's Action and validate it
         try {
             player1LastAction = player1.getAction();
             if (!player1LastAction.action.equals("SILENT") && !player1LastAction.action.equals("TALK")) {
-            	System.err.println("Invalid Action");
+            	gameManager.addToGameSummary("Invalid Action");
                 throw new InvalidAction("Invalid action");
             }
         } catch (TimeoutException e) {
-        	System.err.println("Timeout");
+        	gameManager.addToGameSummary(e.getMessage());
             player1.deactivate(String.format("$%d timeout!", player1.getIndex()));
             player1.setScore(-1);
             endGame();
+            return;
         } catch (InvalidAction e) {
+        	gameManager.addToGameSummary(e.getMessage());
             player1.deactivate(e.getMessage());
             player1.setScore(-1);
             endGame();
+            return;
         } catch (Exception e) {
+        	gameManager.addToGameSummary(e.getMessage());
         	player1.deactivate(e.getMessage());
             player1.setScore(-1);
             endGame();
+            return;
         }
         
         //Calculate Scores
-        System.err.println();
-        System.err.println("--------------------------------");
         if (player0LastAction.action.equals("SILENT") && player1LastAction.action.equals("SILENT")) {
-        	System.err.println("Both Silent");
+        	gameManager.addToGameSummary("Both Silent");
 			player0Score += 4;
 			player1Score += 4;
 		} else if (player0LastAction.action.equals("SILENT") && player1LastAction.action.equals("TALK")) {
-			System.err.println("0 Silent | 1 Talk");
+			gameManager.addToGameSummary("0 Silent | 1 Talk");
 			player1Score += 5;
 		} else if (player0LastAction.action.equals("TALK") && player1LastAction.action.equals("SILENT")) {
-			System.err.println("0 Talk | 1 Silent");
+			gameManager.addToGameSummary("0 Talk | 1 Silent");
 			player0Score += 5;
 		} else if (player0LastAction.action.equals("TALK") && player1LastAction.action.equals("TALK")) {
-			System.err.println("Both Talk");
+			gameManager.addToGameSummary("Both Talk");
 			player0Score += 1;
 			player1Score += 1;
         }
-        System.err.println("Score 0: " + player0Score);
-        System.err.println("Score 1: " + player1Score);
+        gameManager.addToGameSummary("Score 0: " + player0Score);
+        gameManager.addToGameSummary("Score 1: " + player1Score);
         
-        System.err.println("--------------------------------");
-        System.err.println();
+        
+       
         
         player0.setScore(player0Score);
         player1.setScore(player1Score);
         
         if (turn > 98) {
         	endGame();
+        	return;
         }
     }
 }
