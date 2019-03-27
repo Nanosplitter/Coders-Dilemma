@@ -52,12 +52,12 @@ public class Referee extends AbstractReferee {
         Player p0 = gameManager.getPlayers().get(0);
         Player p1 = gameManager.getPlayers().get(1);
         if (p0.getScore() > p1.getScore()) {
-            gameManager.addToGameSummary("-----------------Player 0 Wins----------------");
+            //gameManager.addToGameSummary("-----------------Player 0 Wins----------------");
             gameManager.addToGameSummary("Score 0: " + p0.getScore());
             gameManager.addToGameSummary("Score 1: " + p1.getScore());
         }
         if (p0.getScore() < p1.getScore()) {
-        	gameManager.addToGameSummary("-----------------Player 1 Wins----------------");
+        	//gameManager.addToGameSummary("-----------------Player 1 Wins----------------");
         	gameManager.addToGameSummary("Score 0: " + p0.getScore());
             gameManager.addToGameSummary("Score 1: " + p1.getScore());
             //p0.hud.setAlpha(0.3);
